@@ -1,45 +1,56 @@
 package com.example.himalaya;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
-import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
-import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
-import com.ximalaya.ting.android.opensdk.model.category.Category;
-import com.ximalaya.ting.android.opensdk.model.category.CategoryList;
+import com.example.himalaya.adapter.IndicatorAdapter;
+import com.example.himalaya.views.UILoader;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.lucode.hackware.magicindicator.MagicIndicator;
+import net.lucode.hackware.magicindicator.ViewPagerHelper;
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private MagicIndicator mMagicIndicator;
+    private ViewPager mViewPager;
+    private UILoader mUiLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Map<String, String> map = new HashMap<String, String>();
-        CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
-            @Override
-            public void onSuccess(CategoryList object) {
-                List<Category> categories = object.getCategories();
-                if (categories != null) {
-                    int size = categories.size();
-                    Log.d(TAG, "categories size --->" + size);
-                    for (Category category : categories) {
-                        Log.d(TAG, "category --->" + category.getCategoryName());
-                    }
-                }
-            }
+        initView();
 
+        mUiLoader = new UILoader(this) {
             @Override
-            public void onError(int code, String message) {
-                Log.e(TAG, "error code --" + code + "error msg --" + message);
+            protected View getSuccessView(ViewGroup container) {
+                return null;
             }
-        });
+        };
+
+        //不允许一个View绑定多个view
+        if (mUiLoader.getParent() instanceof ViewGroup) {
+            ((ViewGroup) mUiLoader.getParent()).removeView(mUiLoader);
+        }
+
     }
+
+    private void initView() {
+        mMagicIndicator = findViewById(R.id.main_indicator);
+        mViewPager = findViewById(R.id.content_pager);
+        mMagicIndicator.setBackgroundColor(getColor(R.color.main_color));
+        //创建适配器
+        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(this);
+        CommonNavigator commonNavigator = new CommonNavigator(this);
+        commonNavigator.setAdapter(indicatorAdapter);
+        mMagicIndicator.setNavigator(commonNavigator);
+        ViewPagerHelper.bind(mMagicIndicator, mViewPager);
+    }
+
 }

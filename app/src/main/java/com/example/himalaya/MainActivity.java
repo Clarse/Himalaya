@@ -1,54 +1,73 @@
 package com.example.himalaya;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.himalaya.adapter.IndicatorAdapter;
+import com.example.himalaya.adapter.ViewPagerAdapter;
 import com.example.himalaya.views.UILoader;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     private static final String TAG = "MainActivity";
     private MagicIndicator mMagicIndicator;
     private ViewPager mViewPager;
     private UILoader mUiLoader;
+    private IndicatorAdapter mIndicatorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
-        mUiLoader = new UILoader(this) {
-            @Override
-            protected View getSuccessView(ViewGroup container) {
-                return null;
-            }
-        };
+        initEvent();
+//        mUiLoader = new UILoader(this) {
+//            @Override
+//            protected View getSuccessView(ViewGroup container) {
+//                return null;
+//            }
+//        };
 
         //不允许一个View绑定多个view
-        if (mUiLoader.getParent() instanceof ViewGroup) {
-            ((ViewGroup) mUiLoader.getParent()).removeView(mUiLoader);
-        }
+//        if (mUiLoader.getParent() instanceof ViewGroup) {
+//            ((ViewGroup) mUiLoader.getParent()).removeView(mUiLoader);
+//        }
 
+    }
+
+    private void initEvent() {
+        mIndicatorAdapter.setonIndicatorTapClickListener(new IndicatorAdapter.onIndicatorTapClickListener() {
+            @Override
+            public void onTapClick(int index) {
+                if (mViewPager != null) {
+                    mViewPager.setCurrentItem(index);
+                }
+            }
+        });
     }
 
     private void initView() {
         mMagicIndicator = findViewById(R.id.main_indicator);
-        mViewPager = findViewById(R.id.content_pager);
         mMagicIndicator.setBackgroundColor(getColor(R.color.main_color));
+
+        //viewpager
+        mViewPager = findViewById(R.id.content_pager);
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(supportFragmentManager);
+        mViewPager.setAdapter(viewPagerAdapter);
+
         //创建适配器
-        IndicatorAdapter indicatorAdapter = new IndicatorAdapter(this);
+        mIndicatorAdapter = new IndicatorAdapter(this);
         CommonNavigator commonNavigator = new CommonNavigator(this);
-        commonNavigator.setAdapter(indicatorAdapter);
+        commonNavigator.setAdjustMode(true);
+        commonNavigator.setAdapter(mIndicatorAdapter);
         mMagicIndicator.setNavigator(commonNavigator);
         ViewPagerHelper.bind(mMagicIndicator, mViewPager);
     }

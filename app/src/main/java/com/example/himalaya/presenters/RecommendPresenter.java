@@ -22,7 +22,7 @@ public class RecommendPresenter implements IRecommendPresenter {
 
     private List<IRecommendCallback> mCallbacks = new ArrayList<>();
 
-    RecommendPresenter() {
+    private RecommendPresenter() {
     }
 
     private static RecommendPresenter sInstance = null;

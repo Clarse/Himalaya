@@ -1,5 +1,6 @@
 package com.example.himalaya.fragments;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.himalaya.DetailActivity;
 import com.example.himalaya.R;
 import com.example.himalaya.adapters.RecommendListAdapter;
 import com.example.himalaya.base.BaseFragment;
 import com.example.himalaya.interfaces.IRecommendCallback;
+import com.example.himalaya.presenters.AlbumDetailPresenter;
 import com.example.himalaya.presenters.RecommendPresenter;
 import com.example.himalaya.views.UILoader;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
@@ -21,7 +24,7 @@ import net.lucode.hackware.magicindicator.buildins.UIUtil;
 
 import java.util.List;
 
-public class RecommendFragment extends BaseFragment implements IRecommendCallback {
+public class RecommendFragment extends BaseFragment implements IRecommendCallback, UILoader.onRetryClickListener, RecommendListAdapter.onRecommendItemClickListener {
 
     private static final String TAG = "RecommendFragment";
     private View mRootView;
@@ -51,6 +54,8 @@ public class RecommendFragment extends BaseFragment implements IRecommendCallbac
             ((ViewGroup) mUiLoader.getParent()).removeView(mUiLoader);
         }
 
+        mUiLoader.setonRetryClickListener(this);
+
         //返回view给界面显示
         return mUiLoader;
     }
@@ -75,6 +80,7 @@ public class RecommendFragment extends BaseFragment implements IRecommendCallbac
         });
         //3.设置适配器
         mRecommendListAdapter = new RecommendListAdapter();
+        mRecommendListAdapter.setonRecommendItemClick(this);
         mRecyclerView.setAdapter(mRecommendListAdapter);
         return mRootView;
     }
@@ -109,6 +115,22 @@ public class RecommendFragment extends BaseFragment implements IRecommendCallbac
         if (mRecommendPresenter != null) {
             mRecommendPresenter.unRegisterViewCallback(this);
         }
+    }
+
+    @Override
+    public void onRetryClick() {
+        if (mRecommendPresenter != null) {
+            //网络异常是点击重新获取数据
+            mRecommendPresenter.getRecommendList();
+        }
+    }
+
+    @Override
+    public void onItemClick(int position, Album album) {
+        AlbumDetailPresenter.getInstance().setTargetAlbum(album);
+        //item被点击跳转到详情页面
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        startActivity(intent);
     }
 
 }

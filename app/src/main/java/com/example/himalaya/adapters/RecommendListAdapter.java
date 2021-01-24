@@ -19,6 +19,7 @@ import java.util.List;
 public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdapter.InnerHolder> {
 
     private List<Album> mData = new ArrayList<>();
+    private onRecommendItemClickListener mClickListener;
 
     @NonNull
     @Override
@@ -32,6 +33,14 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
     public void onBindViewHolder(@NonNull InnerHolder holder, int position) {
         //这里设置数据
         holder.itemView.setTag(position);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mClickListener != null) {
+                    mClickListener.onItemClick((Integer) v.getTag(), mData.get((Integer) v.getTag()));
+                }
+            }
+        });
         holder.setData(mData.get(position));
     }
 
@@ -75,6 +84,14 @@ public class RecommendListAdapter extends RecyclerView.Adapter<RecommendListAdap
 
         }
 
+    }
+
+    public void setonRecommendItemClick(onRecommendItemClickListener listener) {
+        this.mClickListener = listener;
+    }
+
+    public interface onRecommendItemClickListener {
+        void onItemClick(int position, Album album);
     }
 
 }

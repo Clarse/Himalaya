@@ -1,50 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_album_item_bg">
 
     <TextView
         android:id="@+id/order_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:layout_centerVertical="true"
+        android:padding="18dp"
         android:text="0"
-        android:textSize="26sp" />
+        android:textColor="@color/sub_text_title"
+        android:textSize="22sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/order_text"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/detail_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="我是大标题"
-            android:textSize="22sp" />
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/detail_item_play_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@mipmap/info"
                 android:text="14.4万"
-                android:textColor="@color/sub_text_title" />
+                android:textColor="@color/sub_text_title"
+                android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/detail_item_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:drawableStart="@mipmap/sound"
                 android:text="14.4万"
-                android:textColor="@color/sub_text_title" />
+                android:textColor="@color/sub_text_title"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_marginBottom="10dp"
+        android:id="@+id/detail_item_update_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:text="2021-1-26"
+        android:textColor="@color/sub_text_title"
+        android:textSize="12sp" />
 
 </RelativeLayout>

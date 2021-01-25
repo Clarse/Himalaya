@@ -13,6 +13,11 @@ public interface IAlbumDetailViewCallback {
     void onDetailListLoaded(List<Track> tracks);
 
     /*
+     * 网络错误
+     * */
+    void onNetWorkError(int errorCode, String errorMsg);
+
+    /*
      *吧album传给UI使用
      * */
     void onAlbumLoaded(Album album);

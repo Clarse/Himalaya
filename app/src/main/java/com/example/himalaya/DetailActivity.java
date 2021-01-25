@@ -8,8 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.himalaya.adapter.AlbumDetailListAdapter;
 import com.example.himalaya.base.BaseActivity;
 import com.example.himalaya.interfaces.IAlbumDetailViewCallback;
 import com.example.himalaya.presenters.AlbumDetailPresenter;
@@ -28,7 +31,10 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
     private RoundRectImageView mSmallCover;
     private TextView mAlbumTitle;
     private TextView mAlbumAuthor;
+    private RecyclerView mAlbumDetailList;
     private AlbumDetailPresenter mAlbumDetailPresenter;
+    private int mCurrentPage = 1;
+    private AlbumDetailListAdapter mAlbumDetailListAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,15 +52,25 @@ public class DetailActivity extends BaseActivity implements IAlbumDetailViewCall
         mSmallCover = findViewById(R.id.iv_small_cover);
         mAlbumTitle = findViewById(R.id.tv_album_title);
         mAlbumAuthor = findViewById(R.id.tv_album_author);
+        mAlbumDetailList = findViewById(R.id.album_detail_list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mAlbumDetailList.setLayoutManager(linearLayoutManager);
+        mAlbumDetailListAdapter = new AlbumDetailListAdapter();
+        mAlbumDetailList.setAdapter(mAlbumDetailListAdapter);
     }
 
     @Override
     public void onDetailListLoaded(List<Track> tracks) {
-
+        //更新设置UI数据
+        mAlbumDetailListAdapter.setData(tracks);
     }
 
     @Override
     public void onAlbumLoaded(Album album) {
+
+        //获取专辑的详情内容
+        mAlbumDetailPresenter.getAlbumDetail((int) album.getId(), mCurrentPage);
+
         if (mAlbumTitle != null) {
             mAlbumTitle.setText(album.getAlbumTitle());
         }
